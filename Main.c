@@ -1,11 +1,98 @@
 #include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+#include<stdbool.h>
 
-#define BEGINNER 1
-#define INTERMEDIATE 2
-#define ADVANCE 3
+#define BEGINNER 1         // Sides => 9*9, Mines = 10
+#define INTERMEDIATE 2     // Sides => 16*16, Mines = 40
+#define ADVANCE 3          // Sides => 24*24, Mines = 99
+#define MAXSIDES 25
 
 int sides, mines;
+bool gameOver = false;
 
+// Initializing realBoard and playingBoard
+// Real Board will contain the location of mines
+// Playing Board will be visible to the user while playing
+char realBoard[MAXSIDES][MAXSIDES];
+char playingBoard[MAXSIDES][MAXSIDES];
+
+// Function to check if the given position is valid or not
+bool isValid(int row, int col){
+    if(row >= 0 && row < sides && col >= 0 && col < sides) return true;
+    return false;
+}
+
+// Function to check if a mine is present or not on given position
+bool isMine(int row, int col){
+    if(realBoard[row][col] == '*') return true;
+    return false;
+}
+
+// Function to find the number of mines present near our current position 
+int countAdjacentMines(int row, int col){
+    int count = 0;
+
+    // First Neighbour
+    if(isValid(row-1, col-1)){
+        if(isMine(row-1, col-1)){
+            count++;
+        }
+    }
+
+    // Second Neighbour
+    if(isValid(row-1, col)){
+        if(isMine(row-1, col)){
+            count++;
+        }
+    }
+
+    // Third Neighbour
+    if(isValid(row-1, col+1)){
+        if(isMine(row-1, col+1)){
+            count++;
+        }
+    }
+
+    // Fourth Neighbour
+    if(isValid(row, col-1)){
+        if(isMine(row, col-1)){
+            count++;
+        }
+    }
+
+    // Fifth Neighbour
+    if(isValid(row, col+1)){
+        if(isMine(row, col+1)){
+            count++;
+        }
+    }
+
+    // Sixth Neighbour
+    if(isValid(row+1, col-1)){
+        if(isMine(row+1, col-1)){
+            count++;
+        }
+    }
+
+    // Seventh Neighbour
+    if(isValid(row+1, col)){
+        if(isMine(row+1, col)){
+            count++;
+        }
+    }
+
+    // Eighth Neighbour
+    if(isValid(row+1, col+1)){
+        if(isMine(row+1, col+1)){
+            count++;
+        }
+    }
+
+    return count;
+}
+
+// Function to set the difficulty level
 void chooseDifficulty(){
     printf("Choose a difficulty level\n");
     printf("Press 1 for BEGINNER\n");
@@ -33,13 +120,108 @@ void chooseDifficulty(){
     };
 }
 
-int main(){
-    chooseDifficulty();
+// Function to print the board
+void printBoard(char board[MAXSIDES][MAXSIDES]){
+    printf("    ");
+    for(int col=0; col<sides; col++){
+        printf("%d ", col);
+    }
+    printf("\n");
 
-    char realBoard[sides][sides], playingBoard[sides, sides];
+    for(int row=0; row<sides; row++){
+        printf(" %d  ", row);
+        for(int col=0; col<sides; col++){
+            printf("%c ", board[row][col]);
+        }
+        printf("\n");
+    }
+}
+
+// Function to initialize both boards
+void initialize(){
     for(int row=0; row<sides; row++){
         for(int col=0; col<sides; col++){
             realBoard[row][col] = playingBoard[row][col] = '-';
         }
     }
+}
+
+// Function to place mines on realBoard
+void placeMines(){
+    srand(time(0));
+    for(int i=0; i<mines; ){
+        int row = rand() % sides;
+        int col = rand() % sides;
+
+        if(realBoard[row][col] == '-'){
+            realBoard[row][col] = '*';
+            i++;
+        }
+    }
+} 
+
+// Function to replace mine in realBoard if user taps on mine on first move 
+void replaceMine(int row, int col){
+    realBoard[row][col] = '-';
+    for(int i=0; i<sides; i++){
+        for(int j=0; j<sides; j++){
+            if(realBoard[i][j] == '-'){
+                realBoard[i][j] = '*';
+                return;
+            }
+        }
+    }
+}
+
+// Function to make a move on playingBoard
+void makeMove(){
+    static int currentMoveIndex = 0;
+    
+    int row, col;
+    printf("Enter row and col -> ");
+    scanf("%d", &row);
+    scanf("%d", &col);
+    
+    if(isValid(row, col)){
+        if(currentMoveIndex == 0){
+            if(isMine(row, col)){
+                replaceMine(row, col);
+            } 
+        }
+
+        if(isMine(row, col)){
+            printf("You Lose!\n");
+            printBoard(realBoard);
+            gameOver = true;
+            return;
+        }
+        else if(realBoard[row][col] == '-'){
+            int mineCount = countAdjacentMines(row, col);
+            playingBoard[row][col] = mineCount + '0';
+            realBoard[row][col] = mineCount + '0';
+            currentMoveIndex++;
+        }
+    }
+    else{
+        printf("Please enter a valid move.\n");
+        makeMove();
+    }
+}
+
+// Function to start and end the game
+void startGame(){
+    initialize();
+    placeMines();
+
+    while(!gameOver){
+        printBoard(playingBoard);
+        makeMove();
+    }
+}
+
+// Main Function
+int main(){
+    chooseDifficulty();
+
+    startGame();
 }
