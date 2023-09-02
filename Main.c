@@ -122,16 +122,21 @@ void chooseDifficulty(){
 
 // Function to print the board
 void printBoard(char board[MAXSIDES][MAXSIDES]){
-    printf("    ");
+    printf("\nCurrent Status of the board => \n");
+    printf("     ");
+
     for(int col=0; col<sides; col++){
         printf("%d ", col);
     }
     printf("\n");
 
     for(int row=0; row<sides; row++){
-        printf(" %d  ", row);
+        if(row<10) printf("  %d  ", row);
+        else printf(" %d  ", row);
+
         for(int col=0; col<sides; col++){
-            printf("%c ", board[row][col]);
+            if(col<10) printf("%c ", board[row][col]);
+            else printf(" %c ", board[row][col]);
         }
         printf("\n");
     }
@@ -173,16 +178,126 @@ void replaceMine(int row, int col){
     }
 }
 
+// Function to open adjacent cells if there's no mine is present
+void openAdjacentCells(int row, int col){
+    if(!isValid(row, col)) return;
+
+    int count = 0;
+    if(isValid(row-1, col-1)){
+        count = countAdjacentMines(row-1, col-1);
+        playingBoard[row-1][col-1] = count + '0';
+        realBoard[row-1][col-1] = count + '0';
+
+        // int newRow = row-1;
+        // int newCol = col-1;
+        // if(isValid(newRow, newCol)){
+            // if(count == 0) openAdjacentCells(row-1, col-1);
+        // }
+    }
+
+    if(isValid(row-1, col)){
+        count = countAdjacentMines(row-1, col);
+        playingBoard[row-1][col] = count + '0';
+        realBoard[row-1][col] = count + '0';
+        
+        // int newRow = row-1;
+        // int newCol = col;
+        // if(isValid(newRow, newCol)){
+            // if(count == 0) openAdjacentCells(row-1, col);
+        // }
+    }
+
+    if(isValid(row-1, col+1)){
+        count = countAdjacentMines(row-1, col+1);
+        playingBoard[row-1][col+1] = count + '0';
+        realBoard[row-1][col+1] = count + '0';
+
+        // int newRow = row-1;
+        // int newCol = col+1;
+        // if(isValid(newRow, newCol)){
+            // if(count == 0) openAdjacentCells(row-1, col+1);
+        // }
+    }
+
+    if(isValid(row, col-1)){
+        count = countAdjacentMines(row, col-1);
+        playingBoard[row][col-1] = count + '0';
+        realBoard[row][col-1] = count + '0';
+
+        // int newRow = row;
+        // int newCol = col-1;
+        // if(isValid(newRow, newCol)){
+            // if(count == 0) openAdjacentCells(row, col-1);
+        // }
+    }
+
+    if(isValid(row, col+1)){
+        count = countAdjacentMines(row, col+1);
+        playingBoard[row][col+1] = count + '0';
+        realBoard[row][col+1] = count + '0';
+       
+        // int newRow = row;
+        // int newCol = col+1;
+        // if(isValid(newRow, newCol)){
+            // if(count == 0) openAdjacentCells(row, col+1);
+        // }
+    }
+    
+    if(isValid(row+1, col-1)){
+        count = countAdjacentMines(row+1, col-1);
+        playingBoard[row+1][col-1] = count + '0';
+        realBoard[row+1][col-1] = count + '0';
+
+        // int newRow = row+1;
+        // int newCol = col-1;
+        // if(isValid(newRow, newCol)){
+            // if(count == 0) openAdjacentCells(row+1, col-1);
+        // }
+    }
+
+    if(isValid(row+1, col)){
+        count = countAdjacentMines(row+1, col);
+        playingBoard[row+1][col] = count + '0';
+        realBoard[row+1][col] = count + '0';
+
+        // int newRow = row+1;
+        // int newCol = col;
+        // if(isValid(newRow, newCol)){
+            // if(count == 0) openAdjacentCells(row+1, col);
+        // }
+    }
+    
+    if(isValid(row+1, col+1)){
+        count = countAdjacentMines(row+1, col+1);
+        playingBoard[row+1][col+1] = count + '0';
+        realBoard[row+1][col+1] = count + '0';
+        
+        // int newRow = row+1;
+        // int newCol = col+1;
+        // if(isValid(newRow, newCol)){
+            // if(count == 0) openAdjacentCells(row+1, col+1);
+        // }
+    }
+}
+
 // Function to make a move on playingBoard
 void makeMove(){
     static int currentMoveIndex = 0;
-    
+    int mineCount = 0;
+
     int row, col;
     printf("Enter row and col -> ");
     scanf("%d", &row);
     scanf("%d", &col);
-    
-    if(isValid(row, col)){
+
+    if(row == 99 && col == 99){
+        int mineX, mineY;
+        printf("Enter the location of mine =>> ");
+        scanf("%d", &mineX);
+        scanf("%d", &mineY);
+        playingBoard[mineX][mineY] = '*';
+    }
+    else if(isValid(row, col)){
         if(currentMoveIndex == 0){
             if(isMine(row, col)){
                 replaceMine(row, col);
@@ -196,9 +311,10 @@ void makeMove(){
             return;
         }
         else if(realBoard[row][col] == '-'){
-            int mineCount = countAdjacentMines(row, col);
+            mineCount = countAdjacentMines(row, col);
             playingBoard[row][col] = mineCount + '0';
             realBoard[row][col] = mineCount + '0';
+            
             currentMoveIndex++;
         }
     }
@@ -206,6 +322,8 @@ void makeMove(){
         printf("Please enter a valid move.\n");
         makeMove();
     }
+    
+    if(mineCount == 0) openAdjacentCells(row, col);
 }
 
 // Function to start and end the game
@@ -223,5 +341,9 @@ void startGame(){
 int main(){
     chooseDifficulty();
 
+    initialize();
+    placeMines();
+
+    printBoard(realBoard);
     startGame();
 }
