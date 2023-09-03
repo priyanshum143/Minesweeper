@@ -16,7 +16,7 @@ Before you begin, ensure you have met the following requirements:
 
 ## Installation
 Clone this repository to your local machine using:
-- git clone https://https://github.com/priyanshum143/Minesweeper
+- git clone https://github.com/priyanshum143/Minesweeper
 
 ## How to Play  
 - The game grid consists of cells, some of which contain hidden mines.
