@@ -16,13 +16,13 @@ Before you begin, ensure you have met the following requirements:
 
 ## Installation
 Clone this repository to your local machine using:
---> git clone https://https://github.com/priyanshum143/Minesweeper
+- git clone https://https://github.com/priyanshum143/Minesweeper.
 
 ## How to Play  
---> The game grid consists of cells, some of which contain hidden mines.
---> Your goal is to clear all non-mine cells without triggering any mines.
---> Use the row and column number to navigate the grid.
---> If you suspect a cell contains a mine, you can flag it by entering "99 99" instead of row and col and then enter the location of cell containing a mine.
---> If you think you have flagged a wrong cell then enter "99 99" instead of row and column and then enter the location of cell from which you want to remove flag
+- The game grid consists of cells, some of which contain hidden mines.
+- Your goal is to clear all non-mine cells without triggering any mines.
+- Use the row and column number to navigate the grid.
+- If you suspect a cell contains a mine, you can flag it by entering "99 99" instead of row and col and then enter the location of cell containing a mine.
+- If you think you have flagged a wrong cell then enter "99 99" instead of row and column and then enter the location of cell from which you want to remove flag
     and then enter 1.
---> The game ends when you either clear all safe cells or trigger a mine.
+- The game ends when you either clear all safe cells or trigger a mine.
