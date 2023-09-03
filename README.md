@@ -18,7 +18,7 @@ Before you begin, ensure you have met the following requirements:
 Clone this repository to your local machine using:
 --> git clone https://https://github.com/priyanshum143/Minesweeper
 
-How to Play => 
+## How to Play  
 --> The game grid consists of cells, some of which contain hidden mines.
 --> Your goal is to clear all non-mine cells without triggering any mines.
 --> Use the row and column number to navigate the grid.
